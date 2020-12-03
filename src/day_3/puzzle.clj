@@ -22,24 +22,35 @@
       "." false
       "END")))
 
-(defn solution-pt1
-  [input]
+(defn solution
+  [input x-speed y-speed]
   (loop [x           0
          y           0
          trees       0]
-    (let [new-x    (+ x 3)
-          new-y    (+ y 1)
+    (let [new-x    (+ x x-speed)
+          new-y    (+ y y-speed)
           tree?    (is-tree? input new-x new-y)]
       (cond
-        (= tree? "END") (println "END OF THE RUN" trees)
+        (= tree? "END") (do (println "END OF RUN")
+                            trees)
         (= tree? true)  (recur new-x new-y (inc trees))
-        (= tree? false)  (recur new-x new-y trees)))))
+        (= tree? false) (recur new-x new-y trees)))))
 
 (comment
   (is-tree? test-input 4 11) ;; -> END
   (is-tree? test-input 5 1) ;; -> false
   (is-tree? test-input 4 1) ;; -> true
-  (solution-pt1 puzzle-input))
+
+  ;; Solution pt1
+  (solution puzzle-input 3 1)
+
+  ;; Solution pt2
+  (*
+   (solution puzzle-input 1 1)
+   (solution puzzle-input 3 1)
+   (solution puzzle-input 5 1)
+   (solution puzzle-input 7 1)
+   (solution puzzle-input 1 2)))
 
 
 
