@@ -1,15 +1,11 @@
 (ns day-3.puzzle
-  (:require [clojure.java.io :as io]
-            [clojure.string  :as str]))
+  (:require [clojure.string        :as str]
+            [santas-little-helpers :as h]))
 
-(def test-input (->> (io/resource "data/day_3/test.txt")
-                     (io/reader)
-                     (line-seq)
+(def test-input (->> (h/read-input "data/day_3/test.txt")
                      (mapv #(str/split % #""))))
 
-(def puzzle-input (->> (io/resource "data/day_3/input.txt")
-                       (io/reader)
-                       (line-seq)
+(def puzzle-input (->> (h/read-input "data/day_3/input.txt")
                        (mapv #(str/split % #""))))
 
 (defn is-tree?

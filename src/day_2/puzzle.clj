@@ -1,16 +1,13 @@
 (ns day-2.puzzle
-  (:require [clojure.string  :as str]
-            [clojure.java.io :as io]
-            [helpers         :as h]))
+  (:require [clojure.string        :as str]
+            [santas-little-helpers :as h]))
 
-(def puzzle-input (->> (io/resource "data/day_2/input.txt")
-                       (io/reader)
-                       (line-seq)))
+(def puzzle-input (h/read-input "data/day_2/input.txt"))
 
 (defn parse-input
   [s]
   (let [[_ min max char password] (re-find #"(\d+)-(\d+) (.): (.*)" s)]
-    [(h/str->int min) (h/str->int max) char password]))
+    [(h/parse-int min) (h/parse-int max) char password]))
 
 (def parsed-input (map parse-input puzzle-input))
 
