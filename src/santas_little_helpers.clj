@@ -10,5 +10,11 @@
        (line-seq)))
 
 (defn parse-int
-  [s]
-  (Integer. s))
+  "Parses a Java character or string to an integer.
+   Accepts an optional base argument for converting to
+   a base n integer"
+  ([s]
+   (Integer/parseInt s))
+  ([s base]
+   (Integer/parseInt s base)))
+
