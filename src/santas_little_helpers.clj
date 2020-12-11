@@ -18,3 +18,8 @@
   ([s base]
    (Integer/parseInt s base)))
 
+(defn vec-remove
+  "remove elem in coll"
+  [pos coll]
+  (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
+
