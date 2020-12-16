@@ -2,10 +2,6 @@
   (:require [clojure.string        :as cstr]
             [santas-little-helpers :as h]))
 
-"- If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
- - If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
- - Otherwise, the seat's state does not change."
-
 (def test-seat-map [["L" "." "L" "L" "." "L" "L" "." "L" "L"]
                     ["L" "L" "L" "L" "L" "L" "L" "." "L" "L"]
                     ["L" "." "L" "." "L" "." "." "L" "." "."]
@@ -21,6 +17,26 @@
 (def input (->> (h/read-input "data/day_11/input.txt")
                 (mapv #(cstr/split % #""))))
 
+(defn get-seats-in-direction
+  [first-neighbour current-seat-pos seat-map]
+  (let [seat (get-in seat-map first-neighbour)]
+    (cond
+      (nil? seat)  nil
+      (= seat "L") "L"
+      (= seat "#") "#"
+      (= seat ".") (let [[rise run]    [(- (first first-neighbour) (first current-seat-pos))
+                                        (- (last first-neighbour) (last current-seat-pos))]
+                         apply-slope   (fn [[y x]]
+                                         [(+ y rise) (+ x run)])
+                         next-adjacent (loop [next-neighbour-pos (apply-slope first-neighbour)]
+                                         (let [next-neighbour (get-in seat-map next-neighbour-pos)]
+                                           (cond
+                                             (nil? next-neighbour)  "."
+                                             (= next-neighbour "#") "#"
+                                             (= next-neighbour "L") "L"
+                                             (= next-neighbour ".") (recur (apply-slope next-neighbour-pos)))))]
+                     next-adjacent))))
+
 (defn get-neighbour-positions
   [position]
   (let [[row-n seat-n] position]
@@ -35,7 +51,8 @@
         occupied-count         (count (filter #{"#"} neighbours))
         no-occupied-seats      (zero? occupied-count)
         is-occupied            (= current-seat "#")
-        four-or-more           (>= occupied-count 4)]
+        four-or-more           (>= occupied-count 4)
+        #_five-or-more       #_(>= occupied-count 5)] ;; <-- replace four-or-more with this for pt 2
     (cond
       is-aisle                               "."
       (and is-empty no-occupied-seats)       "#"
@@ -46,7 +63,7 @@
 (defn next-state-at-position
   [current-seat-pos seat-map]
   (let [neighbour-positions (get-neighbour-positions current-seat-pos)
-        neighbours          (map #(get-in seat-map %) neighbour-positions)
+        neighbours          (map #(get-in seat-map %) neighbour-positions) ;; (map #(get-seats-in-direction % current-seat-pos seat-map) neighbour-positions) for pt 2
         current-seat        (get-in seat-map current-seat-pos)]
     (update-seat current-seat neighbours)))
 
@@ -75,7 +92,7 @@
 
 (comment
   #_(time (find-occupied-seats input))
-  (find-occupied-seats input))
+  (find-occupied-seats test-seat-map))
 
 
 
