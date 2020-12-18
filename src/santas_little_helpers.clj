@@ -23,3 +23,4 @@
   [pos coll]
   (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
 
+(defn abs [n] (max n (- n)))
